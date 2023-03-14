@@ -22,7 +22,7 @@ public class EmployeesDAO {
         List<Employees> employeesListi = new ArrayList<>();
         try {
             Connection conn = MyConnection.getConnection();
-            String sql = "SELECT * FROM employees order by full_name";
+            String sql = "SELECT * FROM employees";
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             while (rs.next()){
@@ -75,6 +75,33 @@ public class EmployeesDAO {
         }
         return null;
     }
+    public  List<Employees> getBuyName(String name){
+        List<Employees> employeesListi = new ArrayList<>();
+        try {
+            Connection conn = MyConnection.getConnection();
+            String sql = "SELECT * FROM employees where full_name like "+"'%"+name+"'";
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()){
+                Employees e = new Employees();
+                e.setId(rs.getLong("id"));
+                e.setFullname(rs.getString("full_name"));
+                e.setCity(rs.getString("city"));
+                e.setEmail(rs.getString("email"));
+                e.setPhone(rs.getString("phone"));
+                e.setGender(rs.getInt("gender"));
+                e.setSalary(rs.getInt("salary"));
+                employeesListi.add(e);
+            }
+            conn.close();
+            stmt.close();
+            rs.close();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return employeesListi;
+    }
     public void insert (Employees e){
         try {
             //b1
@@ -84,7 +111,10 @@ public class EmployeesDAO {
                     e.getFullname(), e.getCity(), e.getEmail(), e.getPhone(), e.getGender(), e.getSalary()
                     );
             Statement stmt = conn.createStatement();
-            stmt.executeUpdate(sql);
+            int rs = stmt.executeUpdate(sql);
+            if (rs == 0){
+                System.out.println("thêm thất bại!");
+            }
             stmt.close();
             conn.close();
         }
@@ -104,6 +134,7 @@ public class EmployeesDAO {
                    e.getFullname(),e.getCity(),e.getEmail(),e.getPhone(), e.getGender(), e.getSalary(), id);
             Statement stmt = conn.createStatement();
             long rs = stmt.executeUpdate(sql);
+            System.out.println(rs);
             if (rs == 0){
                 System.out.println("cap nhat that bai");
             }
@@ -123,6 +154,8 @@ public class EmployeesDAO {
             if (rs==0){
                 System.out.println("xoa that bai");
             }
+            stmt.close();
+            conn.close();
         }
         catch (Exception e1){
             e1.printStackTrace();

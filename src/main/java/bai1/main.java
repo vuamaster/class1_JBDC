@@ -37,6 +37,25 @@ public class main {
         tmp.setSalary(Integer.parseInt(in.nextLine()));
         employeesDAO.insert(tmp);
     }
+    public static void capNhat(Scanner in){
+        System.out.print("nhập id nhân viên muốn cập nhật : ");
+        long id = Long.parseLong(in.nextLine());
+        Employees tmp = new Employees();
+        System.out.print("nhập tên: ");
+        tmp.setFullname(in.nextLine());
+        System.out.print("nhập city: ");
+        tmp.setCity(in.nextLine());
+        System.out.print("nhập email: ");
+        tmp.setEmail(in.nextLine());
+        System.out.print("nhập phone: ");
+        tmp.setPhone(in.nextLine());
+        System.out.print("nhập gới tính ( 0-nữ, 1- nam) :");
+        tmp.setGender(Integer.parseInt(in.nextLine()));
+        System.out.print("Nhập lương: ");
+        tmp.setSalary(Integer.parseInt(in.nextLine()));
+        employeesDAO.update(tmp, id);
+    }
+
     public static void main(String[] args) {
         List<Employees> employeesList = new ArrayList<>();
         Scanner in = new Scanner(System.in);
@@ -60,22 +79,45 @@ public class main {
                     themnhanvien(in);
                     break;
                 case 2:
-                    List<Employees> list = employeesDAO.getAll();
-                    System.out.println(list);
+                    //List<Employees> list = employeesDAO.getAll();
+                    //cach2
+                    List<Employees> employeesList1 = employeesDAO.getAll();
+                    employeesList1.stream()
+                            .sorted((o1, o2) -> o1.getFullname().compareTo(o2.getFullname()))
+                            .forEach(employees -> System.out.println(employees));
                     break;
                 case 3:
+                    System.out.print("nhập tên muốn tìm kiếm: ");
+                    String name = in.nextLine();
+                    List<Employees> list = employeesDAO.getBuyName(name);
+                    System.out.println(list);
                     break;
                 case 4:
+                    capNhat(in);
                     break;
                 case 5:
+                    System.out.print("nhập nhân viên id cần xóa : ");
+                    long id = Long.parseLong(in.nextLine());
+                    employeesDAO.delete(id);
                     break;
                 case 6:
                     break;
                 case 7:
+                    final double[] tongluong = {0};
+                    final int[] sonhanvien = {0};
+                    List<Employees> employeesList2 = employeesDAO.getAll();
+                    employeesList2.stream()
+                            .filter(employees -> employees.getGender()==0)
+                            .forEach(employees ->{
+                                sonhanvien[0]++;
+                                tongluong[0] = tongluong[0] + employees.getSalary();
+                            } );
+                    System.out.println("mức lương trung bình của nhân viên nữ là : "+tongluong[0]/sonhanvien[0]);
                     break;
                 case 8:
                     break;
             }
         }while (option != 8);
+        in.close();
     }
 }
