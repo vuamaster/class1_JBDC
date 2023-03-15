@@ -4,11 +4,12 @@ import bai1.dao.EmployeesDAO;
 import bai1.model.Employees;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
 public class main {
-    static  EmployeesDAO employeesDAO =new EmployeesDAO();
+    private static  EmployeesDAO employeesDAO =new EmployeesDAO();
     static  List<Employees> employeesList = new ArrayList<>();
     public static void mainMenu(){
         System.out.println("----QUẢN LÝ NHÂN SỰ----");
@@ -31,7 +32,7 @@ public class main {
         tmp.setEmail(in.nextLine());
         System.out.print("nhập phone: ");
         tmp.setPhone(in.nextLine());
-        System.out.print("nhập gới tính ( 0-nữ, 1- nam) :");
+        System.out.print("Nhập gới tính: nữ nhập 0, Nam nhập 1 : ");
         tmp.setGender(Integer.parseInt(in.nextLine()));
         System.out.print("Nhập lương: ");
         tmp.setSalary(Integer.parseInt(in.nextLine()));
@@ -49,11 +50,20 @@ public class main {
         tmp.setEmail(in.nextLine());
         System.out.print("nhập phone: ");
         tmp.setPhone(in.nextLine());
-        System.out.print("nhập gới tính ( 0-nữ, 1- nam) :");
+        System.out.print("Nhập gới tính: nữ nhập 0, Nam nhập 1 : ");
         tmp.setGender(Integer.parseInt(in.nextLine()));
         System.out.print("Nhập lương: ");
         tmp.setSalary(Integer.parseInt(in.nextLine()));
         employeesDAO.update(tmp, id);
+    }
+    private static void option6(){
+        List<Employees> employeesList3 = employeesDAO.getAll();
+        System.out.printf("%-20s %-20s %-20s","Mã Nhân Viên","Tên Nhân Viên","Lương");
+        System.out.println();
+        employeesList3.stream()
+                .sorted(Comparator.comparingDouble(Employees::getSalary).reversed())
+                .limit(5)
+                .forEach(employees -> System.out.printf("%-20s %-20s %-20d\n",employees.getId(),employees.getFullname(),employees.getSalary()));
     }
 
     public static void main(String[] args) {
@@ -101,6 +111,7 @@ public class main {
                     employeesDAO.delete(id);
                     break;
                 case 6:
+                    option6();
                     break;
                 case 7:
                     final double[] tongluong = {0};
